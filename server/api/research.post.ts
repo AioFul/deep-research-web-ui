@@ -4,6 +4,7 @@ import type { ConfigAi, ConfigWebSearch } from '~~/shared/types/config'
 import { RuntimeConfig } from 'nuxt/schema'
 import fs from 'node:fs'
 import path from 'node:path'
+import { fetchUrlContent } from '~~/server/utils/content'
 
 // --- ApiKeyPool with File-based State Persistence ---
 
@@ -207,6 +208,44 @@ async function createServerWebSearch(runtimeConfig: RuntimeConfig) {
     const apiBase = runtimeConfig.webSearchApiBase
 
     switch (provider) {
+      case 'searxng': {
+        const searxngUrl = runtimeConfig.public.searxngApiUrl
+        if (!searxngUrl) {
+          throw new Error('NUXT_PUBLIC_SEARXNG_API_URL environment variable not set.')
+        }
+
+        const searchUrl = `${searxngUrl}/search`
+        const response = await $fetch<any>(searchUrl, {
+          params: {
+            q: query,
+            format: 'json',
+            language: options.lang || 'en',
+          },
+        })
+
+        if (!response.results) {
+          return []
+        }
+
+        // Searxng returns snippets, so we need to fetch full content for top results
+        // Limit to top 3 to avoid excessive requests
+        const topResults = response.results.slice(0, 3)
+        const browserlessApiUrl = runtimeConfig.public.browserlessApiUrl
+
+        const enrichedResults = await Promise.all(
+          topResults.map(async (r: any) => {
+            const content = await fetchUrlContent(r.url, browserlessApiUrl)
+            return {
+              content: content || r.content || r.snippet || '',
+              url: r.url,
+              title: r.title,
+            }
+          }),
+        )
+
+        return enrichedResults.filter((r) => r.content.length > 50) // Filter out empty/short content
+      }
+
       case 'firecrawl': {
         const fc = new Firecrawl({
           apiKey,

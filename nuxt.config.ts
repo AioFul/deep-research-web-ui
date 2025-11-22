@@ -10,6 +10,10 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
   ],
 
+  devServer: {
+    host: '0.0.0.0',
+  },
+
   runtimeConfig: {
     public: {
       version: projVersion,
@@ -24,6 +28,8 @@ export default defineNuxtConfig({
       tavilyAdvancedSearch: process.env.NUXT_PUBLIC_TAVILY_ADVANCED_SEARCH === 'true',
       tavilySearchTopic: process.env.NUXT_PUBLIC_TAVILY_SEARCH_TOPIC || 'general',
       googlePseId: process.env.NUXT_PUBLIC_GOOGLE_PSE_ID,
+      searxngApiUrl: process.env.NUXT_PUBLIC_SEARXNG_API_URL,
+      browserlessApiUrl: process.env.NUXT_PUBLIC_BROWSERLESS_API_URL,
     },
     // Private server-only configuration
     aiApiKey: process.env.NUXT_AI_API_KEY,

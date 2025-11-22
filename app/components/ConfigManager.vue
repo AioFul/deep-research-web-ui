@@ -8,7 +8,12 @@
     data: OpenAICompatibleModel[]
   }
 
-  const { config, aiApiBase, webSearchApiBase, showConfigManager: showModal } = storeToRefs(useConfigStore())
+  const {
+    config,
+    aiApiBase,
+    webSearchApiBase,
+    showConfigManager: showModal,
+  } = storeToRefs(useConfigStore())
   const { t } = useI18n()
   const runtimeConfig = useRuntimeConfig()
   const isServerMode = computed(() => runtimeConfig.public.serverMode)
@@ -103,9 +108,16 @@
       help: 'settings.webSearch.providers.google-pse.help',
       link: 'https://programmablesearchengine.google.com/', // Link to Google PSE console
     },
+    {
+      label: 'SearXNG',
+      value: 'searxng',
+      supportsCustomApiBase: true,
+    },
   ])
   const tavilySearchTopicOptions = ['general', 'news', 'finance']
-  const selectedAiProvider = computed(() => aiProviderOptions.value.find((o) => o.value === config.value.ai.provider))
+  const selectedAiProvider = computed(() =>
+    aiProviderOptions.value.find((o) => o.value === config.value.ai.provider),
+  )
   const selectedWebSearchProvider = computed(() =>
     webSearchProviderOptions.value.find((o) => o.value === config.value.webSearch.provider),
   )
@@ -147,7 +159,12 @@
 
   // Automatically fetch AI models list
   watch(
-    () => [config.value.ai.provider, config.value.ai.apiKey, config.value.ai.apiBase, showModal.value],
+    () => [
+      config.value.ai.provider,
+      config.value.ai.apiKey,
+      config.value.ai.apiBase,
+      showModal.value,
+    ],
     () => {
       if (!showModal.value || isServerMode.value) return
       debouncedListAiModels()
@@ -215,7 +232,10 @@
                   :disabled="isServerMode"
                 />
               </UFormField>
-              <UFormField :label="$t('settings.ai.apiKey')" :required="config.ai.provider !== 'ollama'">
+              <UFormField
+                :label="$t('settings.ai.apiKey')"
+                :required="config.ai.provider !== 'ollama'"
+              >
                 <PasswordInput
                   v-model="config.ai.apiKey"
                   class="w-full"
@@ -224,7 +244,12 @@
                 />
               </UFormField>
               <UFormField :label="$t('settings.ai.apiBase')">
-                <UInput v-model="config.ai.apiBase" class="w-full" :placeholder="aiApiBase" :disabled="isServerMode" />
+                <UInput
+                  v-model="config.ai.apiBase"
+                  class="w-full"
+                  :placeholder="aiApiBase"
+                  :disabled="isServerMode"
+                />
               </UFormField>
               <UFormField :label="$t('settings.ai.model')" required>
                 <UInputMenu
@@ -268,8 +293,17 @@
             <div class="flex flex-col gap-y-2">
               <UFormField>
                 <template #help>
-                  <i18n-t v-if="selectedWebSearchProvider?.help" :keypath="selectedWebSearchProvider.help" tag="p">
-                    <UButton class="!p-0" :to="selectedWebSearchProvider.link" target="_blank" variant="link">
+                  <i18n-t
+                    v-if="selectedWebSearchProvider?.help"
+                    :keypath="selectedWebSearchProvider.help"
+                    tag="p"
+                  >
+                    <UButton
+                      class="!p-0"
+                      :to="selectedWebSearchProvider.link"
+                      target="_blank"
+                      variant="link"
+                    >
                       {{ selectedWebSearchProvider.link }}
                     </UButton>
                   </i18n-t>
@@ -281,7 +315,10 @@
                   :disabled="isServerMode"
                 />
               </UFormField>
-              <UFormField :label="$t('settings.webSearch.apiKey')" :required="!config.webSearch.apiBase">
+              <UFormField
+                :label="$t('settings.webSearch.apiKey')"
+                :required="!config.webSearch.apiBase"
+              >
                 <PasswordInput
                   v-model="config.webSearch.apiKey"
                   class="w-full"
@@ -291,7 +328,10 @@
               </UFormField>
 
               <template v-if="config.webSearch.provider === 'google-pse'">
-                <UFormField :label="$t('settings.webSearch.providers.google-pse.pseIdLabel')" required>
+                <UFormField
+                  :label="$t('settings.webSearch.providers.google-pse.pseIdLabel')"
+                  required
+                >
                   <UInput
                     v-model="config.webSearch.googlePseId"
                     class="w-full"
@@ -312,9 +352,24 @@
                   :disabled="isServerMode"
                 />
               </UFormField>
+
+              <template v-if="config.webSearch.provider === 'searxng'">
+                <UFormField label="Browserless API URL (Optional)">
+                  <UInput
+                    v-model="config.webSearch.browserlessApiUrl"
+                    class="w-full"
+                    placeholder="http://localhost:3000"
+                    :disabled="isServerMode"
+                  />
+                </UFormField>
+              </template>
               <UFormField :label="$t('settings.webSearch.queryLanguage')">
                 <template #help>
-                  <i18n-t class="whitespace-pre-wrap" keypath="settings.webSearch.queryLanguageHelp" tag="p" />
+                  <i18n-t
+                    class="whitespace-pre-wrap"
+                    keypath="settings.webSearch.queryLanguageHelp"
+                    tag="p"
+                  />
                 </template>
                 <LangSwitcher
                   :value="config.webSearch.searchLanguage"
@@ -345,7 +400,10 @@
                   :label="$t('settings.webSearch.providers.tavily.advancedSearch')"
                   :help="$t('settings.webSearch.providers.tavily.advancedSearchHelp')"
                 >
-                  <USwitch v-model="config.webSearch.tavilyAdvancedSearch" :disabled="isServerMode" />
+                  <USwitch
+                    v-model="config.webSearch.tavilyAdvancedSearch"
+                    :disabled="isServerMode"
+                  />
                 </UFormField>
                 <UFormField
                   :label="$t('settings.webSearch.providers.tavily.searchTopic')"
@@ -370,7 +428,12 @@
           <p class="text-sm text-gray-500">
             {{ isServerMode ? $t('serverMode.configNotice') : $t('settings.disclaimer') }}
           </p>
-          <UButton v-if="!isServerMode" color="primary" icon="i-lucide-check" @click="showModal = false">
+          <UButton
+            v-if="!isServerMode"
+            color="primary"
+            icon="i-lucide-check"
+            @click="showModal = false"
+          >
             {{ $t('settings.save') }}
           </UButton>
         </div>

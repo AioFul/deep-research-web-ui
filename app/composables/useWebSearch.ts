@@ -37,6 +37,52 @@ export const useWebSearch = (): WebSearchFunction => {
           }))
       }
     }
+    case 'searxng': {
+      const apiBase = config.webSearch.apiBase
+      const browserlessApiUrl = config.webSearch.browserlessApiUrl
+
+      return async (q: string, o: WebSearchOptions) => {
+        if (!apiBase) {
+          throw new Error('Searxng API URL not set')
+        }
+
+        const searchUrl = `${apiBase}/search`
+        const response = await $fetch<any>(searchUrl, {
+          params: {
+            q,
+            format: 'json',
+            language: o.lang || 'en',
+          },
+        })
+
+        if (!response.results) {
+          return []
+        }
+
+        // Limit to top 3 to avoid excessive requests
+        const topResults = response.results.slice(0, 3)
+
+        const enrichedResults = await Promise.all(
+          topResults.map(async (r: any) => {
+            // Use server-side fetch endpoint to get content (handles Browserless or local fetch)
+            const { content } = await $fetch<{ content: string }>('/api/fetch', {
+              method: 'POST',
+              body: {
+                url: r.url,
+                browserlessApiUrl,
+              },
+            })
+            return {
+              content: content || r.content || r.snippet || '',
+              url: r.url,
+              title: r.title,
+            }
+          }),
+        )
+
+        return enrichedResults.filter((r: any) => r.content.length > 50)
+      }
+    }
     case 'google-pse': {
       const apiKey = config.webSearch.apiKey
       const pseId = config.webSearch.googlePseId

@@ -7,7 +7,7 @@ export type ConfigAiProvider =
   | 'deepseek'
   | 'ollama'
 
-export type ConfigWebSearchProvider = 'tavily' | 'firecrawl' | 'google-pse'
+export type ConfigWebSearchProvider = 'tavily' | 'firecrawl' | 'google-pse' | 'searxng'
 
 export interface ConfigAi {
   provider: ConfigAiProvider
@@ -31,6 +31,8 @@ export interface ConfigWebSearch {
   /** Tavily: search topic. Defaults to `general` */
   tavilySearchTopic?: 'general' | 'news' | 'finance'
   googlePseId?: string // Google PSE ID
+  searxngApiUrl?: string // Searxng API URL
+  browserlessApiUrl?: string // Browserless API URL
 }
 
 export interface Config {
@@ -52,6 +54,8 @@ export interface ServerRuntimeConfig {
   tavilyAdvancedSearch: boolean
   tavilySearchTopic: 'general' | 'news' | 'finance'
   googlePseId?: string
+  searxngApiUrl?: string
+  browserlessApiUrl?: string
 }
 
 export interface PublicRuntimeConfig {
@@ -65,4 +69,6 @@ export interface PublicRuntimeConfig {
   tavilyAdvancedSearch: boolean
   tavilySearchTopic: 'general' | 'news' | 'finance'
   googlePseId?: string
+  searxngApiUrl?: string
+  browserlessApiUrl?: string
 }

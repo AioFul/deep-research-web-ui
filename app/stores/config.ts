@@ -12,6 +12,7 @@ function validateConfig(config: Config) {
   // Either apiBase or apiKey is required for firecrawl
   if (ws.provider === 'firecrawl' && !ws.apiBase && !ws.apiKey) return false
   if (ws.provider === 'google-pse' && (!ws.apiKey || !ws.googlePseId)) return false // Require API Key and PSE ID
+  if (ws.provider === 'searxng' && !ws.apiBase) return false
   if (typeof ws.concurrencyLimit !== 'undefined' && ws.concurrencyLimit! < 1) return false
   return true
 }
@@ -31,6 +32,7 @@ export const useConfigStore = defineStore('config', () => {
     tavilyAdvancedSearch: runtimeConfig.public.tavilyAdvancedSearch,
     tavilySearchTopic: runtimeConfig.public.tavilySearchTopic,
     googlePseId: runtimeConfig.public.googlePseId,
+    browserlessApiUrl: runtimeConfig.public.browserlessApiUrl,
   }))
 
   const localConfig = useLocalStorage<Config>('deep-research-config', {
@@ -62,6 +64,7 @@ export const useConfigStore = defineStore('config', () => {
           tavilyAdvancedSearch: serverConfig.value.tavilyAdvancedSearch,
           tavilySearchTopic: serverConfig.value.tavilySearchTopic as any,
           googlePseId: serverConfig.value.googlePseId,
+          browserlessApiUrl: serverConfig.value.browserlessApiUrl,
           apiKey: '******',
           apiBase: undefined,
         },
