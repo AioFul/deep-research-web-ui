@@ -12,6 +12,40 @@ $:
           image: cnbcool/codewiki:latest
           settings:
             git_doc_dir: /data/codewiki/${CNB_REPO_SLUG}
+  main_push:
+    - services:
+        - docker
+      docker:
+        volumes:
+          - /data/codewiki/${CNB_REPO_SLUG}:data
+      imports:
+        - https://cnb.cool/${CNB_GROUP_SLUG}/envs/-/blob/main/env.yml
+      stages:
+        - name: 同步到 GitHub
+          image: alpine/git:latest
+          script: |
+            echo "开始同步到 GitHub..."
+            
+            # 配置 Git 用户信息
+            git config --global user.name "${GITHUB_USER_NAME}"
+            git config --global user.email "${GITHUB_USER_EMAIL}"
+            
+            # 添加 GitHub 远程仓库（使用环境变量）
+            # 注意：需要在 CNB 环境变量中配置 GITHUB_TOKEN
+            if [ -n "$GITHUB_TOKEN" ]; then
+              git remote add github https://${GITHUB_TOKEN}@github.com/AioFul/deep-research-web-ui.git
+              echo "已添加 GitHub 远程仓库: AioFul/deep-research-web-ui"
+            else
+              echo "❌ 错误：未设置 GITHUB_TOKEN 环境变量"
+              exit 1
+            fi
+            
+            # 推送到 GitHub（强制推送以保持同步）
+            echo "正在推送到 GitHub..."
+            git push github main --force
+            
+            echo "✅ 同步到 GitHub 完成！"
+
   vscode:
     - runner:
         cpus: 2
@@ -23,4 +57,8 @@ $:
           - /data/codewiki/${CNB_REPO_SLUG}:data
       stages:
         - name: 开发环境
-          script: echo "开发环境已启动"
+          image: node:22-alpine
+          script: |
+            echo "开发环境已启动，Node.js 已预装"
+            node --version
+            npm --version

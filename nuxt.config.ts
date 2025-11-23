@@ -10,6 +10,14 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
   ],
 
+  // 禁用自动字体加载
+  fonts: {
+    providers: {
+      google: false,
+      googleicons: false,
+    },
+  },
+
   devServer: {
     host: '0.0.0.0',
   },
@@ -76,6 +84,10 @@ export default defineNuxtConfig({
         },
       },
     },
+    // 开发环境允许所有主机访问（适合 CNB 云环境）
+    server: {
+      allowedHosts: 'all'
+    }
   },
 
   nitro: {
