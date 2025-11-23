@@ -18,9 +18,9 @@ export default defineNuxtConfig({
     },
   },
 
-  devServer: {
-    host: '0.0.0.0',
-  },
+  // devServer: {
+  //   host: '0.0.0.0',
+  // },
 
   runtimeConfig: {
     public: {
@@ -85,9 +85,9 @@ export default defineNuxtConfig({
       },
     },
     // 开发环境允许所有主机访问（适合 CNB 云环境）
-    server: {
-      allowedHosts: 'all'
-    }
+    // server: {
+    //   allowedHosts: 'all'
+    // }
   },
 
   nitro: {
