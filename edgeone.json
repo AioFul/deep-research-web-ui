@@ -1,7 +1,7 @@
 {
   "name": "deep-research-web",
-  "buildCommand": "npm generate:optimize",
-  "installCommand": "npm install",
+  "buildCommand": "pnpm generate:optimize",
+  "installCommand": "pnpm install",
   "outputDirectory": ".output/public",
   "nodeVersion": "20.18.0",
   "headers": [
