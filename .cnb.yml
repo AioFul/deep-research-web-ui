@@ -1,4 +1,21 @@
 $:
+  vscode:
+    - runner:
+        cpus: 2
+      services:
+        - vscode
+        - docker
+      docker:
+        volumes:
+          - /data/codewiki/${CNB_REPO_SLUG}:data
+      stages:
+        - name: 开发环境
+          image: node:22-alpine
+          script: |
+            echo "开发环境已启动，Node.js 已预装"
+            node --version
+            npm --version
+          
   tag_push:
     - services:
         - docker
@@ -12,7 +29,9 @@ $:
           image: cnbcool/codewiki:latest
           settings:
             git_doc_dir: /data/codewiki/${CNB_REPO_SLUG}
-  main_push:
+
+main:
+  push:
     - services:
         - docker
       docker:
@@ -45,20 +64,3 @@ $:
             git push github main --force
             
             echo "✅ 同步到 GitHub 完成！"
-
-  vscode:
-    - runner:
-        cpus: 2
-      services:
-        - vscode
-        - docker
-      docker:
-        volumes:
-          - /data/codewiki/${CNB_REPO_SLUG}:data
-      stages:
-        - name: 开发环境
-          image: node:22-alpine
-          script: |
-            echo "开发环境已启动，Node.js 已预装"
-            node --version
-            npm --version
