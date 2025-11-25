@@ -1,4 +1,3 @@
-import { tavily } from '@tavily/core'
 import Firecrawl from '@mendable/firecrawl-js'
 
 type WebSearchOptions = {
@@ -133,16 +132,27 @@ export const useWebSearch = (): WebSearchFunction => {
     }
     case 'tavily':
     default: {
-      const tvly = tavily({
-        apiKey: config.webSearch.apiKey,
-      })
+      const apiKey = config.webSearch.apiKey
       return async (q: string, o: WebSearchOptions) => {
-        const results = await tvly.search(q, {
-          ...o,
-          searchDepth: config.webSearch.tavilyAdvancedSearch ? 'advanced' : 'basic',
-          topic: config.webSearch.tavilySearchTopic,
+        if (!apiKey) {
+          throw new Error('Tavily API key not set')
+        }
+        const response = await $fetch<{
+          results: Array<{ content: string; url: string; title: string }>
+        }>('https://api.tavily.com/search', {
+          method: 'POST',
+          body: {
+            api_key: apiKey,
+            query: q,
+            max_results: o.maxResults,
+            search_depth: config.webSearch.tavilyAdvancedSearch ? 'advanced' : 'basic',
+            topic: config.webSearch.tavilySearchTopic || 'general',
+            include_answer: false,
+            include_images: false,
+            include_raw_content: false,
+          },
         })
-        return results.results
+        return response.results
           .filter((x) => !!x?.content && !!x.url)
           .map((r) => ({
             content: r.content,
