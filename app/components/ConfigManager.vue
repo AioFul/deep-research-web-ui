@@ -317,7 +317,7 @@
               </UFormField>
               <UFormField
                 :label="$t('settings.webSearch.apiKey')"
-                :required="!config.webSearch.apiBase"
+                :required="config.webSearch.provider !== 'searxng'"
               >
                 <PasswordInput
                   v-model="config.webSearch.apiKey"
@@ -344,6 +344,7 @@
               <UFormField
                 v-if="selectedWebSearchProvider?.supportsCustomApiBase"
                 :label="$t('settings.webSearch.apiBase')"
+                :required="config.webSearch.provider === 'searxng'"
               >
                 <UInput
                   v-model="config.webSearch.apiBase"

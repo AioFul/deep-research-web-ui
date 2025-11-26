@@ -2,134 +2,43 @@
 
 [English | [中文](README_zh.md)]
 
-This is a web UI for https://github.com/dzhng/deep-research, with several improvements and fixes.
+**Deep Research** is an advanced, AI-powered research assistant built with Nuxt 3. It leverages Large Language Models (LLMs) and recursive web search techniques to automate the process of deep information retrieval, analysis, and report generation.
 
-Features:
+Give it a topic, and it will:
+1.  **Plan**: Generate a research framework and search keywords.
+2.  **Search**: Execute parallel web searches and crawl content using industry-leading tools.
+3.  **Analyze**: Read, deduplicate, and synthesize information from multiple sources.
+4.  **Report**: Produce a structured, comprehensive research report with citations.
+5.  **Visualize**: Display the entire research thought process in an interactive flow.
 
-- 🚀 **Safe & Secure**: Everything (config, API requests, ...) stays in your browser locally
-- 🕙 **Realtime feedback**: Stream AI responses and reflect on the UI in real-time
-- 🌳 **Search visualization**: Shows the research process using a tree structure. Supports searching in different languages
-- 📄 **Export as PDF**: Export the final research report as Markdown / PDF
-- 🤖 **Supports more models**: Uses plain prompts instead of newer, less widely supported features like Structured Outputs. This ensures to work with more providers that haven't caught up with the latest OpenAI capabilities.
-- 🐳 **Docker support**: Deploy in your environment in one-line command
-- 🔧 **Server Mode**: Deploy with environment variables, no need for users to configure API keys
+## ✨ Key Features
 
-Currently available providers:
+- 🚀 **Safe & Secure**: All configuration and API keys are stored locally in your browser (Client Mode), or securely on your server (Server Mode).
+- 🔍 **Recursive Deep Search**: Goes beyond surface-level results by recursively exploring related topics and following leads.
+- 🕙 **Real-time Feedback**: Watch the AI think, plan, and search in real-time with a transparent execution flow.
+- 📊 **Visual Knowledge Graph**: Interactive tree visualization of the research path and gathered information.
+- 📄 **Professional Reports**: Exports findings as polished Markdown or PDF reports.
+- 🤖 **Multi-Model Support**: Works with OpenAI, DeepSeek, SiliconFlow, OpenRouter, Ollama, and more.
+- 🌍 **Multi-Language**: Supports research and reporting in multiple languages (English, Chinese, Dutch, etc.).
+- 🐳 **Easy Deployment**: Docker-ready with support for both simplified Server Mode (env vars) and flexible Client Mode.
 
-- AI: OpenAI compatible, SiliconFlow, Infiniai, DeepSeek, OpenRouter, Ollama and more
-- Web Search: Tavily (1000 free credits / month), Firecrawl (cloud / self-hosted)
+## 🛠️ Architecture
 
-Please give a 🌟 Star if you like this project!
+Built on a modern, robust tech stack:
+- **Framework**: [Nuxt 4](https://nuxt.com/) (Vue 3)
+- **UI Library**: [Nuxt UI](https://ui.nuxt.com/) & Tailwind CSS
+- **State Management**: [Pinia](https://pinia.vuejs.org/)
+- **AI Integration**: [Vercel AI SDK](https://sdk.vercel.ai/)
+- **Search Integration**: Tavily & Firecrawl
 
-## Sponsor
+## 🚀 Quick Start
 
-<a href="https://www.swiftproxy.net/?ref=anotiawang">
-<img width="415" alt="image" src="https://github.com/user-attachments/assets/df889a5f-c4fc-4209-b49d-9c7dc8b9c3ca" />
-</a>
+### Option 1: Docker (Recommended)
 
-**Unlock Reliable Proxy Services with Swiftproxy**
+You can run Deep Research in two modes: **Server Mode** (API keys set on server) or **Client Mode** (users enter API keys in browser).
 
-With Swiftproxy, you can access high-performance, secure proxies to enhance your web automation, privacy, and data collection efforts. Our services are trusted by developers and businesses to scale scraping tasks and ensure a safe online experience. Get started today at Swiftproxy.net. Use the coupon `GHB5` to get 10% off!
-
----
-
-<video width="500" src="https://github.com/user-attachments/assets/8f9baa43-a74e-4613-aebb-1bcc29a686f0" controls></video>
-
-## Recent updates
-
-25/07/24
-
-- Added: Research history management - Export/import individual history records, delete all records
-
-25/07/23
-
-- Added: Server Mode - Deploy with environment variables, users don't need to configure API keys
-
-25/06/26
-
-- Added: Provider 302.AI support
-
-25/04/06
-
-- Added: Use Google PSE for web search
-
-25/03/09
-
-- Added: InifiniAI support
-- Improved LLM prompts
-- Improved error handling
-- Improved: Try to fetch model list even when no API key is provided
-
-25/02/27
-
-- Added: Citations in research report
-- Improved: Chinese output layout
-- Improved: Increased max width and breadth in the form
-- Fixed: Text overflow issues for web search node details
-- Fixed: general UI style issues
-
-25/02/24
-
-- Added: Fullscreen mode for the search flow. This helps you to focus on the search process better.
-- Changed: "Export PDF" now uses the browser's native print ability. This fixes layout issues and emilinates font problems.
-- Fixed: "Context Size" setting are not correctly applied
-
-25/02/22
-
-- Added: NL/Dutch translation
-- Added: Retry failed nodes in web search
-- Fixed: Web search node sometimes shows empty label and duplicated learnings
-- Fixed: Firecrawl now limits scrape content format to `Markdown`
-
-25/02/18 - 25/02/20
-
-- Added: "advanced search" and "search topic" support for Tavily
-- Added: custom endpoint support for Firecrawl
-- Fixed: overall bug fixes, less "invalid JSON structure" errors
-
-25/02/17
-
-- Added: set rate limits for web search
-- Added: set context length for AI model
-
-25/02/16
-
-- Refactored the search visualization using VueFlow
-- Style & bug fixes
-
-<details>
-<summary>Older updates</summary>
-
-25/02/15
-
-- Added AI providers DeepSeek, OpenRouter and Ollama; Added web search provider Firecrawl
-- Supported checking project updates
-- Supported regenerating reports
-- General fixes
-
-25/02/14
-
-- Supported reasoning models like DeepSeek R1
-- Improved compatibility with more models & error handling
-
-25/02/13
-
-- Significantly reduced bundle size
-- Supported searching in different languages
-- Added Docker support
-- Fixed "export as PDF" issues
-</details>
-
-## How to use
-
-Live demo: <a href="https://deep-research.ataw.top" target="_blank">https://deep-research.ataw.top</a>
-
-### Self hosted
-
-#### Server Mode (Recommended)
-Deploy with environment variables - users don't need to configure API keys:
-
-**Using Docker with environment variables:**
+#### Server Mode (Best for sharing)
+Users don't need to configure anything. You provide the API keys via environment variables.
 
 ```bash
 docker run -p 3000:3000 \
@@ -142,107 +51,124 @@ docker run -p 3000:3000 \
   anotia/deep-research-web:latest
 ```
 
-**Using Docker with .env file:**
-
-```bash
-# Create .env file with your configuration
-docker run -p 3000:3000 --env-file .env anotia/deep-research-web:latest
-```
-
-#### Client Mode (Traditional)
-Users configure their own API keys in the browser:
-
-One-click deploy with [EdgeOne Pages](https://edgeone.ai/products/pages):
-
-[![Deploy with EdgeOne Pages](https://cdnstatic.tencentcs.com/edgeone/pages/deploy.svg)](https://edgeone.ai/pages/new?from=github&template=https://github.com/AnotiaWang/deep-research-web-ui&from=github)
-
-Use pre-built Docker image:
+#### Client Mode (Best for personal use)
+Users configure their own API keys in the browser settings.
 
 ```bash
 docker run -p 3000:3000 --name deep-research-web -d anotia/deep-research-web:latest
 ```
 
-Use self-built Docker image:
+### Option 2: Local Development
 
-```
-git clone https://github.com/AnotiaWang/deep-research-web-ui
+1.  **Clone the repository**:
+    ```bash
+git clone https://github.com/AnotiaWang/deep-research-web-ui.git
 cd deep-research-web-ui
-docker build -t deep-research-web .
-docker run -p 3000:3000 --name deep-research-web -d deep-research-web
 ```
 
-### Environment Variables
-
-#### Server Mode Configuration
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `NUXT_PUBLIC_SERVER_MODE` | Enable server mode | `false` |
-| `NUXT_AI_API_KEY` | AI provider API key | - |
-| `NUXT_AI_API_BASE` | AI provider base URL | - |
-| `NUXT_WEB_SEARCH_API_KEY` | Web search API key | - |
-| `NUXT_WEB_SEARCH_API_BASE` | Web search base URL | - |
-
-#### Public Configuration (Server Mode)
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `NUXT_PUBLIC_AI_PROVIDER` | AI provider type | `openai-compatible` |
-| `NUXT_PUBLIC_AI_MODEL` | AI model name | `gpt-4o-mini` |
-| `NUXT_PUBLIC_AI_CONTEXT_SIZE` | Context size | `128000` |
-| `NUXT_PUBLIC_WEB_SEARCH_PROVIDER` | Search provider | `tavily` |
-| `NUXT_PUBLIC_WEB_SEARCH_CONCURRENCY_LIMIT` | Max concurrency | `2` |
-| `NUXT_PUBLIC_WEB_SEARCH_SEARCH_LANGUAGE` | Search language | `en` |
-| `NUXT_PUBLIC_TAVILY_ADVANCED_SEARCH` | Use Tavily advanced search | `false` |
-| `NUXT_PUBLIC_TAVILY_SEARCH_TOPIC` | Tavily search topic | `general` |
-| `NUXT_PUBLIC_GOOGLE_PSE_ID` | Google PSE ID | - |
-
----
-
-## Developing
-
-### Setup
-
-Make sure to install dependencies:
-
-```bash
+2.  **Install dependencies**:
+    ```bash
 pnpm install
 ```
 
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
+3.  **Start development server**:
+    ```bash
 pnpm dev
 ```
+    Access the app at `http://localhost:3000`.
 
-## Production
-
-Build the application for production:
-
-If you want to deploy a SSR application:
-
-```bash
+4.  **Build for production**:
+    ```bash
 pnpm build
 ```
 
-If you want to deploy a static, SSG application:
+## ⚙️ Configuration
 
-```bash
-pnpm generate
+### Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| **Server Mode** | | |
+| `NUXT_PUBLIC_SERVER_MODE` | Enable server-side configuration mode | `false` |
+| `NUXT_AI_API_KEY` | API Key for the AI Provider | - |
+| `NUXT_AI_API_BASE` | Base URL for the AI Provider | - |
+| `NUXT_WEB_SEARCH_API_KEY` | API Key for Search Provider (Tavily/Firecrawl) | - |
+| **Public Settings** | | |
+| `NUXT_PUBLIC_AI_PROVIDER` | AI Provider (`openai`, `deepseek`, `siliconflow`, `custom`) | `openai-compatible` |
+| `NUXT_PUBLIC_AI_MODEL` | Model ID (e.g., `gpt-4o`, `deepseek-chat`) | `gpt-4o-mini` |
+| `NUXT_PUBLIC_AI_CONTEXT_SIZE`| Max context window size | `128000` |
+| `NUXT_PUBLIC_WEB_SEARCH_PROVIDER` | Search Provider (`tavily`, `firecrawl`, `google-pse`) | `tavily` |
+| `NUXT_PUBLIC_WEB_SEARCH_CONCURRENCY_LIMIT` | Max parallel search requests | `2` |
+| `NUXT_PUBLIC_WEB_SEARCH_SEARCH_LANGUAGE` | Default search language | `en` |
+
+### Supported Providers
+
+**AI Models:**
+- OpenAI (and compatibles)
+- DeepSeek
+- SiliconFlow
+- OpenRouter
+- Ollama (Local)
+- InfiniAI
+
+**Web Search:**
+- Tavily (Recommended)
+- Firecrawl
+- Google Programmable Search Engine (PSE)
+
+## 📂 Project Structure
+
+```
+/
+├── app/                      # Nuxt Frontend
+│   ├── components/           # Vue Components (ResearchForm, Reports, etc.)
+│   ├── composables/          # Shared logic (AI providers, Search logic)
+│   ├── stores/               # Pinia State (Config, History)
+│   └── pages/                # Application Routes
+├── server/                   # Nitro Backend
+│   └── api/
+│       ├── research.post.ts  # Core recursive research logic
+│       └── report.post.ts    # Report generation endpoint
+├── lib/                      # Core Business Logic (Shared)
+│   ├── ai/                   # AI Provider abstractions & Prompts
+│   └── core/                 # Deep Research algorithm implementation
+└── docs/                     # Detailed Documentation
 ```
 
-Locally preview production build:
+## 🛣️ Roadmap
 
-```bash
-pnpm preview
-```
+- [x] Recursive deep search & analysis
+- [x] Multi-language support
+- [x] Docker deployment
+- [x] Real-time visualization
+- [ ] **Enhanced Reporting**: PDF/Markdown export improvements, data visualization integration.
+- [ ] **Advanced Agents**: Multi-agent collaboration for complex tasks.
+- [ ] **Data Sources**: Support for PDF upload and academic paper analysis (RAG).
+- [ ] **User System**: Authentication and cloud history sync.
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+## 🤝 Contributing
 
-## License
+Contributions are welcome! Please feel free to submit a Pull Request.
+1.  Fork the Project
+2.  Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3.  Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4.  Push to the Branch (`git push origin feature/AmazingFeature`)
+5.  Open a Pull Request
 
-MIT
+## 📄 License
 
-## Star History
+Distributed under the MIT License. See `LICENSE` for more information.
+
+## 🌟 Sponsor
+
+<a href="https://www.swiftproxy.net/?ref=anotiawang">
+<img width="415" alt="image" src="https://github.com/user-attachments/assets/df889a5f-c4fc-4209-b49d-9c7dc8b9c3ca" />
+</a>
+
+**Unlock Reliable Proxy Services with Swiftproxy**
+
+With Swiftproxy, you can access high-performance, secure proxies to enhance your web automation, privacy, and data collection efforts. Our services are trusted by developers and businesses to scale scraping tasks and ensure a safe online experience. Get started today at Swiftproxy.net. Use the coupon `GHB5` to get 10% off!
+
+## 📈 Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=AnotiaWang/deep-research-web-ui&type=Date)](https://star-history.com/#AnotiaWang/deep-research-web-ui&Date)
