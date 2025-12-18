@@ -200,7 +200,12 @@ function processSearchResult({
   })
 }
 
-export function writeFinalReport({ prompt, learnings, language, aiConfig }: WriteFinalReportParams) {
+export function writeFinalReport({
+  prompt,
+  learnings,
+  language,
+  aiConfig,
+}: WriteFinalReportParams) {
   const learningsString = trimPrompt(
     learnings
       .map(
@@ -268,7 +273,10 @@ export async function deepResearch({
   /** The Node ID to retry. Passed from DeepResearch.vue */
   retryNode?: any
   onProgress: (step: ResearchStep) => void
-  webSearchFunction: (query: string, options: { maxResults?: number; lang?: string }) => Promise<WebSearchResult[]>
+  webSearchFunction: (
+    query: string,
+    options: { maxResults?: number; lang?: string },
+  ) => Promise<WebSearchResult[]>
   pLimitInstance?: any
 }) {
   const language = languageCode
@@ -392,7 +400,9 @@ export async function deepResearch({
             if (!results.length) {
               throw new Error('No search results found')
             }
-            console.log(`[DeepResearch] Searched "${searchQuery.query}", found ${results.length} contents`)
+            console.log(
+              `[DeepResearch] Searched "${searchQuery.query}", found ${results.length} contents`,
+            )
 
             onProgress({
               type: 'search_complete',
@@ -502,6 +512,23 @@ export async function deepResearch({
               }
             }
           } catch (e: any) {
+            if (e.message === 'No search results found') {
+              console.warn(
+                `[DeepResearch] No results for query "${searchQuery.query}" in node ${searchQuery.nodeId}`,
+              )
+              onProgress({
+                type: 'node_complete', // Mark node as complete even if empty
+                result: {
+                  learnings: [],
+                  followUpQuestions: [],
+                },
+                nodeId: searchQuery.nodeId,
+              })
+              return {
+                learnings: [],
+              }
+            }
+
             console.error(`Error in node ${searchQuery.nodeId} for query ${searchQuery.query}`, e)
             onProgress({
               type: 'error',

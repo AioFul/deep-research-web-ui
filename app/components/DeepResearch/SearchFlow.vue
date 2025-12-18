@@ -3,7 +3,14 @@
   import '@vue-flow/core/dist/theme-default.css'
   import '@vue-flow/controls/dist/style.css'
   import SearchNode from './SearchNode.vue'
-  import { type Edge, type FlowEvents, type Node, VueFlow, useVueFlow, getNodesInside } from '@vue-flow/core'
+  import {
+    type Edge,
+    type FlowEvents,
+    type Node,
+    VueFlow,
+    useVueFlow,
+    getNodesInside,
+  } from '@vue-flow/core'
   import { Background } from '@vue-flow/background'
   import { Controls } from '@vue-flow/controls'
   import type { DeepResearchNodeStatus } from './DeepResearch.vue'

@@ -9,6 +9,7 @@ export async function fetchUrlContent(url: string, browserlessApiUrl?: string): 
         const response = await $fetch<{ data: { text: string } }>(`${browserlessApiUrl}/content`, {
           method: 'POST',
           body: { url },
+          timeout: 15000,
         })
         if (response?.data?.text) {
           return response.data.text
@@ -19,20 +20,107 @@ export async function fetchUrlContent(url: string, browserlessApiUrl?: string): 
     }
 
     // 2. Fallback to local fetch + cheerio + turndown
-    const html = await $fetch<string>(url)
+    // Mimic a real browser to avoid 403s
+    const headers = {
+      'User-Agent':
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      Accept:
+        'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+      'Accept-Language': 'en-US,en;q=0.9',
+      'Cache-Control': 'no-cache',
+      Pragma: 'no-cache',
+      'Sec-Ch-Ua': '"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
+      'Sec-Ch-Ua-Mobile': '?0',
+      'Sec-Ch-Ua-Platform': '"Windows"',
+      'Sec-Fetch-Dest': 'document',
+      'Sec-Fetch-Mode': 'navigate',
+      'Sec-Fetch-Site': 'cross-site',
+      'Sec-Fetch-User': '?1',
+      'Upgrade-Insecure-Requests': '1',
+      Referer: 'https://www.google.com/',
+    }
+
+    const html = await $fetch<string>(url, {
+      headers,
+      timeout: 10000, // 10s timeout
+      retry: 2,
+      retryDelay: 500,
+    })
+
     const $ = cheerio.load(html)
 
-    // Remove unwanted elements
-    $('script, style, nav, footer, header, aside, iframe, noscript').remove()
+    // Remove unwanted elements (expanded list)
+    const noiseSelectors = [
+      'script',
+      'style',
+      'nav',
+      'footer',
+      'header',
+      'aside',
+      'iframe',
+      'noscript',
+      '.ads',
+      '.ad',
+      '.advertisement',
+      '.social-share',
+      '.share-buttons',
+      '.sidebar',
+      '.widget',
+      '.cookie-consent',
+      '.popup',
+      '.modal',
+      '.comment',
+      '.comments',
+      '#comments',
+      '.related-posts',
+      '.recommended',
+      '[role="banner"]',
+      '[role="navigation"]',
+      '[role="contentinfo"]',
+    ]
+    $(noiseSelectors.join(', ')).remove()
 
-    // Get main content (heuristic)
-    const content = $('main, article, #content, .content, body').first().html() || $('body').html() || ''
+    // Get main content (heuristic strategy)
+    // Try to find the specific article tag first, then common ID/classes
+    let content = ''
+    const contentSelectors = [
+      'article',
+      'main',
+      '.post-content',
+      '.article-content',
+      '.entry-content',
+      '#content',
+      '.content',
+      '#main',
+    ]
+
+    for (const selector of contentSelectors) {
+      const element = $(selector)
+      if (element.length > 0 && element.text().trim().length > 100) {
+        content = element.html() || ''
+        break
+      }
+    }
+
+    // Fallback: use body if specific selectors fail
+    if (!content) {
+      content = $('body').html() || ''
+    }
 
     // Convert to Markdown
-    const turndownService = new TurndownService()
+    const turndownService = new TurndownService({
+      headingStyle: 'atx',
+      codeBlockStyle: 'fenced',
+    })
+
+    // Configure turndown to ignore images if needed, or keep them.
+    // Usually for "reading", images might be distraction or broken links, but let's keep them simple.
+    turndownService.remove(['script', 'style', 'iframe'])
+
     return turndownService.turndown(content)
   } catch (e) {
     console.error(`[Content Fetch] Failed to fetch ${url}:`, e)
+    // Return empty string so the flow doesn't crash, but log the error
     return ''
   }
 }

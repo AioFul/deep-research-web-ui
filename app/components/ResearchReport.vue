@@ -1,6 +1,10 @@
 <script setup lang="ts">
   import { marked } from 'marked'
-  import { feedbackInjectionKey, formInjectionKey, researchResultInjectionKey } from '~/constants/injection-keys'
+  import {
+    feedbackInjectionKey,
+    formInjectionKey,
+    researchResultInjectionKey,
+  } from '~/constants/injection-keys'
   import { useServerMode } from '~/composables/useServerMode'
 
   const { t, locale } = useI18n()
@@ -22,7 +26,11 @@
   const researchResult = inject(researchResultInjectionKey)!
 
   const isExportButtonDisabled = computed(
-    () => !reportContent.value || loading.value || loadingExportPdf.value || loadingExportMarkdown.value,
+    () =>
+      !reportContent.value ||
+      loading.value ||
+      loadingExportPdf.value ||
+      loadingExportMarkdown.value,
   )
 
   const reportHtml = computed(() => {
@@ -275,7 +283,13 @@
       </div>
     </template>
 
-    <UAlert v-if="error" :title="$t('researchReport.exportFailed')" :description="error" color="error" variant="soft" />
+    <UAlert
+      v-if="error"
+      :title="$t('researchReport.exportFailed')"
+      :description="error"
+      color="error"
+      variant="soft"
+    />
 
     <div class="flex mb-4 justify-end">
       <UButton
@@ -302,7 +316,12 @@
       </UButton>
     </div>
 
-    <ReasoningAccordion v-if="reasoningContent" v-model="reasoningContent" class="mb-4" :loading="loading" />
+    <ReasoningAccordion
+      v-if="reasoningContent"
+      v-model="reasoningContent"
+      class="mb-4"
+      :loading="loading"
+    />
 
     <div
       ref="reportContainerRef"

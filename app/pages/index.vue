@@ -24,12 +24,21 @@
         </div>
 
         <i18n-t class="whitespace-pre-wrap" keypath="index.projectDescription" tag="p">
-          <UButton class="!p-0" variant="link" href="https://github.com/dzhng/deep-research" target="_blank">
+          <UButton
+            class="!p-0"
+            variant="link"
+            href="https://github.com/dzhng/deep-research"
+            target="_blank"
+          >
             dzhng/deep-research
           </UButton>
         </i18n-t>
 
-        <ResearchForm :is-loading-feedback="!!feedbackRef?.isLoading" ref="formRef" @submit="generateFeedback" />
+        <ResearchForm
+          :is-loading-feedback="!!feedbackRef?.isLoading"
+          ref="formRef"
+          @submit="generateFeedback"
+        />
         <ResearchFeedback
           :is-loading-search="!!deepResearchRef?.isLoading"
           ref="feedbackRef"
@@ -54,7 +63,11 @@
   import type { ResearchResult } from '~~/lib/core/deep-research'
   import type { ResearchHistoryItem } from '~/types/history'
   import { useHistory } from '~/composables/useHistory'
-  import { feedbackInjectionKey, formInjectionKey, researchResultInjectionKey } from '@/constants/injection-keys'
+  import {
+    feedbackInjectionKey,
+    formInjectionKey,
+    researchResultInjectionKey,
+  } from '@/constants/injection-keys'
 
   const runtimeConfig = useRuntimeConfig()
   const version = runtimeConfig.public.version

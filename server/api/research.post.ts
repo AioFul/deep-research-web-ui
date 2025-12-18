@@ -38,7 +38,10 @@ class ApiKeyPool {
     const envKeySet = new Set(keys)
     const stateKeySet = new Set(this.state.keys.map((k) => k.key))
 
-    if (this.state.keys.length !== keys.length || ![...envKeySet].every((k) => stateKeySet.has(k))) {
+    if (
+      this.state.keys.length !== keys.length ||
+      ![...envKeySet].every((k) => stateKeySet.has(k))
+    ) {
       this.state = {
         currentIndex: 0,
         keys: keys.map((key) => ({
@@ -71,7 +74,10 @@ class ApiKeyPool {
     try {
       fs.writeFileSync(this.cacheFilePath, JSON.stringify(this.state, null, 2))
     } catch (error: any) {
-      console.error(`[ApiKeyPool] Error: Could not write to cache file for ${this.cacheFilePath}.`, error.message)
+      console.error(
+        `[ApiKeyPool] Error: Could not write to cache file for ${this.cacheFilePath}.`,
+        error.message,
+      )
     }
   }
 
@@ -95,7 +101,9 @@ class ApiKeyPool {
       keyConfig.errorCount++
       if (keyConfig.errorCount >= keyConfig.maxErrors) {
         keyConfig.active = false
-        console.error(`[ApiKeyPool] Disabling key due to multiple errors: ${key.substring(0, 8)}...`)
+        console.error(
+          `[ApiKeyPool] Disabling key due to multiple errors: ${key.substring(0, 8)}...`,
+        )
       }
       this.saveState()
     }
@@ -223,7 +231,14 @@ async function createServerWebSearch(runtimeConfig: RuntimeConfig) {
           },
         })
 
-        if (!response.results) {
+        if (!response.results || response.results.length === 0) {
+          if (response.unresponsive_engines && response.unresponsive_engines.length > 0) {
+            console.warn(
+              `[SearXNG] No results. Unresponsive engines: ${JSON.stringify(response.unresponsive_engines)}`,
+            )
+          } else {
+            console.warn(`[SearXNG] No results found for query: "${query}"`)
+          }
           return []
         }
 
@@ -285,7 +300,9 @@ async function createServerWebSearch(runtimeConfig: RuntimeConfig) {
             .map((key: string) => key.trim())
             .filter((key: string) => key)
           if (keys.length === 0) {
-            throw new Error('NUXT_WEB_SEARCH_API_KEY environment variable is empty or contains only commas.')
+            throw new Error(
+              'NUXT_WEB_SEARCH_API_KEY environment variable is empty or contains only commas.',
+            )
           }
           googleApiKeyPool = new ApiKeyPool(keys, 'google-pse')
         }
@@ -339,7 +356,9 @@ async function createServerWebSearch(runtimeConfig: RuntimeConfig) {
             .map((key: string) => key.trim())
             .filter((key: string) => key)
           if (keys.length === 0) {
-            throw new Error('NUXT_WEB_SEARCH_API_KEY environment variable is empty or contains only commas.')
+            throw new Error(
+              'NUXT_WEB_SEARCH_API_KEY environment variable is empty or contains only commas.',
+            )
           }
           apiKeyPool = new ApiKeyPool(keys, 'tavily')
         }
