@@ -316,13 +316,21 @@
                 />
               </UFormField>
               <UFormField
-                :label="$t('settings.webSearch.apiKey')"
+                :label="
+                  config.webSearch.provider === 'searxng'
+                    ? 'Browserless API Token'
+                    : $t('settings.webSearch.apiKey')
+                "
                 :required="config.webSearch.provider !== 'searxng'"
               >
                 <PasswordInput
                   v-model="config.webSearch.apiKey"
                   class="w-full"
-                  :placeholder="$t('settings.webSearch.apiKey')"
+                  :placeholder="
+                    config.webSearch.provider === 'searxng'
+                      ? 'Browserless API Token'
+                      : $t('settings.webSearch.apiKey')
+                  "
                   :disabled="isServerMode"
                 />
               </UFormField>

@@ -246,10 +246,11 @@ async function createServerWebSearch(runtimeConfig: RuntimeConfig) {
         // Limit to top 3 to avoid excessive requests
         const topResults = response.results.slice(0, 3)
         const browserlessApiUrl = runtimeConfig.public.browserlessApiUrl
+        const browserlessToken = runtimeConfig.webSearchApiKey
 
         const enrichedResults = await Promise.all(
           topResults.map(async (r: any) => {
-            const content = await fetchUrlContent(r.url, browserlessApiUrl)
+            const content = await fetchUrlContent(r.url, browserlessApiUrl, browserlessToken)
             return {
               content: content || r.content || r.snippet || '',
               url: r.url,

@@ -2,7 +2,7 @@ import { fetchUrlContent } from '~~/server/utils/content'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
-  const { url, browserlessApiUrl } = body
+  const { url, browserlessApiUrl, browserlessToken } = body
 
   if (!url) {
     throw createError({
@@ -11,6 +11,6 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const content = await fetchUrlContent(url, browserlessApiUrl)
+  const content = await fetchUrlContent(url, browserlessApiUrl, browserlessToken)
   return { content }
 })

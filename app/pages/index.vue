@@ -27,7 +27,7 @@
           <UButton
             class="!p-0"
             variant="link"
-            href="https://github.com/dzhng/deep-research"
+            href="https://cnb.cool/aioful/deep-research"
             target="_blank"
           >
             dzhng/deep-research

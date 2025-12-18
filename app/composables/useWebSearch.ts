@@ -69,6 +69,7 @@ export const useWebSearch = (): WebSearchFunction => {
               body: {
                 url: r.url,
                 browserlessApiUrl,
+                browserlessToken: config.webSearch.apiKey,
               },
             })
             return {

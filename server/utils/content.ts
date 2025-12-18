@@ -1,14 +1,23 @@
 import * as cheerio from 'cheerio'
 import TurndownService from 'turndown'
 
-export async function fetchUrlContent(url: string, browserlessApiUrl?: string): Promise<string> {
+export async function fetchUrlContent(
+  url: string,
+  browserlessApiUrl?: string,
+  browserlessToken?: string,
+): Promise<string> {
   try {
     // 1. Try Browserless if configured
     if (browserlessApiUrl) {
       try {
+        const query: Record<string, string> = {}
+        if (browserlessToken) {
+          query.token = browserlessToken
+        }
         const response = await $fetch<{ data: { text: string } }>(`${browserlessApiUrl}/content`, {
           method: 'POST',
           body: { url },
+          query,
           timeout: 15000,
         })
         if (response?.data?.text) {
