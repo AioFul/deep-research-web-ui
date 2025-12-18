@@ -19,9 +19,7 @@
     }
     lastCheck = new Date()
     try {
-      const response = (await $fetch(
-        'https://deep-research.ataw.top/version.json',
-      )) as typeof VersionMeta
+      const response = (await $fetch('/version.json')) as typeof VersionMeta
 
       const hasNewVersion = semverGt(response.version, runtimeConfig.public.version)
       if (hasNewVersion && dismissUpdateVersion.value !== response.version) {
