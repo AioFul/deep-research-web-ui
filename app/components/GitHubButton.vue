@@ -3,7 +3,7 @@
     color="primary"
     variant="subtle"
     icon="i-lucide-github"
-    to="https://github.com/AnotiaWang/deep-research-web-ui"
+    to="https://cnb.cool/aioful/deep-research"
     target="_blank"
   >
   </UButton>
