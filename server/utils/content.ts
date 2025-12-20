@@ -58,9 +58,9 @@ export async function fetchUrlContent(
       try {
         html = await $fetch<string>(url, {
           headers,
-          timeout: 10000, // 10s timeout
-          retry: 2,
-          retryDelay: 500,
+          timeout: 30000, // 30s timeout (increased from 10s)
+          retry: 3, // increased retry count
+          retryDelay: 1000, // increased retry delay
         })
       } catch (e: any) {
         console.warn(`[Content Fetch] Failed to fetch ${url}: ${e.message}`)
