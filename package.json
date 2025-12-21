@@ -48,6 +48,7 @@
     "zod-to-json-schema": "^3.24.4"
   },
   "devDependencies": {
+    "@vite-pwa/nuxt": "^1.1.0",
     "@vueuse/core": "^13.0.0",
     "@vueuse/nuxt": "^13.0.0",
     "prettier": "^3.5.3",

@@ -86,7 +86,10 @@
         v-html="marked(`- ${learning}`, { gfm: true })"
       ></p>
     </template>
-    <span v-if="!node.learnings?.length"> - </span>
+    <div v-if="!node.learnings?.length" class="text-yellow-600 dark:text-yellow-500">
+      <UIcon name="i-lucide-alert-circle" class="mr-1" />
+      <span>未找到相关结果</span>
+    </div>
 
     <!-- Follow up questions -->
     <!-- Only show if there is reasoning content. Otherwise the follow-ups are basically just child nodes. -->

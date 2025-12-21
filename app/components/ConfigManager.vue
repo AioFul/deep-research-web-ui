@@ -10,6 +10,7 @@
 
   const {
     config,
+    isWebSearchServerMode,
     aiApiBase,
     webSearchApiBase,
     showConfigManager: showModal,
@@ -17,6 +18,16 @@
   const { t } = useI18n()
   const runtimeConfig = useRuntimeConfig()
   const isServerMode = computed(() => runtimeConfig.public.serverMode)
+
+  const isWebSearchDisabled = computed(() => ({
+    provider: isServerMode.value || isWebSearchServerMode.value,
+    apiKey: isServerMode.value || isWebSearchServerMode.value,
+    useServer: isServerMode.value || isWebSearchServerMode.value,
+    googlePseId: isServerMode.value || isWebSearchServerMode.value,
+    browserlessApiUrl: isServerMode.value || isWebSearchServerMode.value,
+    // apiBase is only controlled by SERVER_MODE
+    apiBase: isServerMode.value,
+  }))
 
   const loadingAiModels = ref(false)
   const aiModelOptions = ref<string[]>([])
@@ -312,9 +323,20 @@
                   v-model="config.webSearch.provider"
                   class="w-full"
                   :items="webSearchProviderOptions"
-                  :disabled="isServerMode"
+                  :disabled="isWebSearchDisabled.provider"
                 />
               </UFormField>
+
+              <UFormField
+                label="Use Server-side Search"
+                help="When enabled, search requests will be sent through the backend API instead of directly from the browser"
+              >
+                <USwitch
+                  v-model="config.webSearch.useServer"
+                  :disabled="isWebSearchDisabled.useServer"
+                />
+              </UFormField>
+
               <UFormField
                 :label="
                   config.webSearch.provider === 'searxng'
@@ -331,7 +353,7 @@
                       ? 'Browserless API Token'
                       : $t('settings.webSearch.apiKey')
                   "
-                  :disabled="isServerMode"
+                  :disabled="isWebSearchDisabled.apiKey"
                 />
               </UFormField>
 
@@ -344,7 +366,7 @@
                     v-model="config.webSearch.googlePseId"
                     class="w-full"
                     :placeholder="$t('settings.webSearch.providers.google-pse.pseIdPlaceholder')"
-                    :disabled="isServerMode"
+                    :disabled="isWebSearchDisabled.googlePseId"
                   />
                 </UFormField>
               </template>
@@ -358,7 +380,7 @@
                   v-model="config.webSearch.apiBase"
                   class="w-full"
                   :placeholder="webSearchApiBase"
-                  :disabled="isServerMode"
+                  :disabled="isWebSearchDisabled.apiBase"
                 />
               </UFormField>
 
@@ -368,7 +390,7 @@
                     v-model="config.webSearch.browserlessApiUrl"
                     class="w-full"
                     placeholder="http://localhost:3000"
-                    :disabled="isServerMode"
+                    :disabled="isWebSearchDisabled.browserlessApiUrl"
                   />
                 </UFormField>
               </template>

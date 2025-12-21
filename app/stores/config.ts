@@ -17,9 +17,20 @@ function validateConfig(config: Config) {
   return true
 }
 
+// Special validation for web search config - doesn't require apiKey when using server mode
+function validateWebSearchConfig(ws: Config['webSearch']) {
+  // Don't check apiKey because it's not controlled by frontend in server mode
+  if (ws.provider === 'firecrawl' && !ws.apiBase && !ws.apiKey) return false
+  if (ws.provider === 'google-pse' && !ws.googlePseId) return false // Don't require apiKey
+  if (ws.provider === 'searxng' && !ws.apiBase) return false
+  if (typeof ws.concurrencyLimit !== 'undefined' && ws.concurrencyLimit! < 1) return false
+  return true
+}
+
 export const useConfigStore = defineStore('config', () => {
   const runtimeConfig = useRuntimeConfig()
   const isServerMode = computed(() => runtimeConfig.public.serverMode)
+  const isWebSearchServerMode = computed(() => runtimeConfig.public.webSearchServerMode)
 
   // Server mode configuration
   const serverConfig = computed(() => ({
@@ -44,6 +55,7 @@ export const useConfigStore = defineStore('config', () => {
     webSearch: {
       provider: 'tavily',
       concurrencyLimit: 2,
+      useServer: false,
     },
   } satisfies Config)
 
@@ -67,6 +79,7 @@ export const useConfigStore = defineStore('config', () => {
           browserlessApiUrl: serverConfig.value.browserlessApiUrl,
           apiKey: '******',
           apiBase: undefined,
+          useServer: true, // Server mode always uses server
         },
       }) satisfies Config,
   )
@@ -99,11 +112,21 @@ export const useConfigStore = defineStore('config', () => {
     }
   })
 
+  // Web Search independent validation
+  const isWebSearchConfigValid = computed(() => {
+    if (isWebSearchServerMode.value) {
+      return true // Server mode is always valid
+    }
+    return validateWebSearchConfig(config.value.webSearch)
+  })
+
   const showConfigManager = ref(false)
 
   return {
     config: isServerMode.value ? config : skipHydrate(localConfig),
     isConfigValid,
+    isWebSearchServerMode,
+    isWebSearchConfigValid,
     aiApiBase,
     webSearchApiBase,
     showConfigManager,

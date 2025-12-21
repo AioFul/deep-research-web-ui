@@ -33,6 +33,8 @@ export interface ConfigWebSearch {
   googlePseId?: string // Google PSE ID
   searxngApiUrl?: string // Searxng API URL
   browserlessApiUrl?: string // Browserless API URL
+  /** Whether to use server-side web search requests */
+  useServer?: boolean // Use backend API for web search
 }
 
 export interface Config {

@@ -1,5 +1,7 @@
 <template>
   <div>
+    <VitePwaManifest />
+    <InstallPrompt />
     <UContainer>
       <div class="max-w-4xl mx-auto py-8 flex flex-col gap-y-4">
         <div class="flex flex-col sm:flex-row gap-2">

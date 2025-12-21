@@ -8,6 +8,7 @@ export default defineNuxtConfig({
     '@nuxtjs/color-mode',
     '@vueuse/nuxt',
     '@nuxtjs/i18n',
+    '@vite-pwa/nuxt',
   ],
 
   // 禁用自动字体加载
@@ -38,6 +39,7 @@ export default defineNuxtConfig({
       googlePseId: process.env.NUXT_PUBLIC_GOOGLE_PSE_ID,
       searxngApiUrl: process.env.NUXT_PUBLIC_SEARXNG_API_URL,
       browserlessApiUrl: process.env.NUXT_PUBLIC_BROWSERLESS_API_URL,
+      webSearchServerMode: process.env.NUXT_PUBLIC_WEB_SEARCH_SERVER_MODE === 'true',
     },
     // Private server-only configuration
     aiApiKey: process.env.NUXT_AI_API_KEY,
@@ -115,4 +117,68 @@ export default defineNuxtConfig({
     compatibilityVersion: 4,
   },
   devtools: { enabled: true },
+
+  pwa: {
+    registerType: 'autoUpdate',
+    manifest: {
+      name: 'Deep Research - AI Research Assistant',
+      short_name: 'DeepResearch',
+      description: 'AI-powered deep research assistant with recursive web search',
+      theme_color: '#555555',
+      background_color: '#ffffff',
+      display: 'standalone',
+      orientation: 'portrait-primary',
+      scope: '/',
+      start_url: '/',
+      categories: ['education', 'productivity', 'ai'],
+      lang: 'en',
+      dir: 'ltr',
+      icons: [
+        {
+          src: '/icon-192x192.png',
+          sizes: '192x192',
+          type: 'image/png',
+          purpose: 'any'
+        },
+        {
+          src: '/icon-512x512.png',
+          sizes: '512x512',
+          type: 'image/png',
+          purpose: 'any'
+        },
+        {
+          src: '/icon-512x512.maskable.png',
+          sizes: '512x512',
+          type: 'image/png',
+          purpose: 'maskable'
+        }
+      ]
+    },
+    workbox: {
+      navigateFallback: '/',
+      globPatterns: ['**/*.{js,css,html,json,png,svg,ico}'],
+      maximumFileSizeToCacheInBytes: 10 * 1024 * 1024, // 10 MB
+      runtimeCaching: [
+        {
+          urlPattern: /^https?.*/,
+          handler: 'NetworkFirst',
+          options: {
+            cacheName: 'external-resources',
+            expiration: {
+              maxEntries: 50,
+              maxAgeSeconds: 60 * 60 * 24 // 1 day
+            }
+          }
+        }
+      ]
+    },
+    devOptions: {
+      enabled: true,
+      type: 'module',
+      navigateFallback: '/'
+    },
+    client: {
+      installPrompt: true
+    }
+  },
 })

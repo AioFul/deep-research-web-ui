@@ -11,6 +11,41 @@ type WebSearchFunction = (query: string, options: WebSearchOptions) => Promise<W
 export const useWebSearch = (): WebSearchFunction => {
   const { config, webSearchApiBase } = useConfigStore()
 
+  // Use server-side search if configured
+  if (config.webSearch.useServer) {
+    return async (query: string, options: WebSearchOptions) => {
+      console.log(`[WebSearch] Starting server-side search: "${query}"`)
+      const startTime = Date.now()
+
+      try {
+        const response = await $fetch<{ results: WebSearchResult[] }>('/api/search', {
+          method: 'POST',
+          body: {
+            query,
+            options,
+            webSearchConfig: config.webSearch,
+          },
+        })
+
+        const duration = Date.now() - startTime
+        console.log(`[WebSearch] Server search completed in ${duration}ms`, {
+          query,
+          resultCount: response.results.length
+        })
+
+        return response.results
+      } catch (error: any) {
+        const duration = Date.now() - startTime
+        console.error(`[WebSearch] Server search failed after ${duration}ms`, {
+          query,
+          error: error.message
+        })
+        throw error
+      }
+    }
+  }
+
+  // Otherwise, use client-side search (direct API calls)
   switch (config.webSearch.provider) {
     case 'firecrawl': {
       const fc = new Firecrawl({
